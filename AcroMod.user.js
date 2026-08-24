@@ -2,6 +2,7 @@
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
 // @version      1.0
+// @description  AcroMod - RLSimulator Menu
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
 // @icon         https://rlsimulator.com/favicon.ico
