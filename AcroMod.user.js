@@ -2,7 +2,7 @@
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
 // @version      1.0
-// @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2.
+// @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2. Includes Duel Stats and Preferences.
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
 // @icon         https://rlsimulator.com/favicon.ico
@@ -12,37 +12,14 @@
 // @run-at       document-idle
 // ==/UserScript==
 
-/**
- * AcroMod
- * -----------------------------------------------------------------------
- * A small draggable menu (F2 to toggle) that hosts optional feature
- * panels:
- *
- *  - Duel Stats: there is no historic-duel API endpoint - /api/duels
- *    only returns currently OPEN duels. This module polls the endpoint,
- *    watches for duels involving your own account, and records the
- *    result the moment a `winner` first appears on a duel you're part
- *    of. Results persist in localStorage, so they survive page reloads
- *    (but only ever contain duels that resolved while this script was
- *    running somewhere). Key/item values from the API are stored in
- *    hundredths (e.g. 600 = 6 keys) - toKeys() converts for display.
- *
- *  - Preferences: toggles that watch for iziToast notification popups
- *    (sell confirmations, crate-opening rate-limit warnings) and remove
- *    them from the DOM before they're seen, based on their message text.
- *
- *  - Update check: on load, and then every 5 minutes, fetches the @version
- *    from the raw GitHub copy of this script. If it's newer than the
- *    running version, a small toast prompts the user to update.
- * -----------------------------------------------------------------------
- */
 (function () {
   "use strict";
 
   const ACROMOD_VERSION = "1.0";
-  const UPDATE_URL =
-    "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
-  const UPDATE_CHECK_INTERVAL_MS = 10 * 1000; // 10 seconds
+  const UPDATE_URL = "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
+
+  // Update checker
+  const UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
   const UPDATE_DISMISSED_KEY = "acromod_update_dismissed_version_v1";
 
   // =========================================================================
@@ -77,7 +54,7 @@
   function fmt(n) {
     return n.toLocaleString(undefined, {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
   }
 
@@ -101,6 +78,7 @@
       header.classList.add("am-dragging");
 
       const rect = container.getBoundingClientRect();
+
       offsetX = evt.clientX - rect.left;
       offsetY = evt.clientY - rect.top;
 
@@ -135,9 +113,10 @@
       header.classList.remove("am-dragging");
 
       const rect = container.getBoundingClientRect();
+
       saveJSON(positionKey, {
         left: rect.left,
-        top: rect.top,
+        top: rect.top
       });
     });
   }
@@ -256,9 +235,6 @@
         padding: 10px 12px;
         cursor: pointer;
         border-left: 2px solid transparent;
-        border-bottom: none;
-        outline: none;
-        box-shadow: none;
         color: #8a9098;
         font-family: sans-serif;
       }
@@ -272,9 +248,6 @@
         background: #15181b;
         color: #fff;
         border-left-color: #00c896;
-        border-bottom: none;
-        outline: none;
-        box-shadow: none;
       }
 
       #acromod-menu .am-nav-dot {
@@ -456,7 +429,6 @@
         background: #17191c;
         padding: 10px 12px 12px;
         border-bottom: 1px solid #35393f;
-        box-shadow: 0 1px 0 rgba(0,0,0,0.35);
         cursor: grab;
         user-select: none;
       }
@@ -466,10 +438,10 @@
       }
 
       #dl-widget .dl-title-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:8px;
       }
 
       #dl-widget .dl-title {
@@ -679,7 +651,7 @@
   }
 
   // =========================================================================
-  // AcroMod menu shell
+  // AcroMod menu
   // =========================================================================
 
   const ACROMOD_OPEN_KEY = "acromod_open_v1";
@@ -692,10 +664,14 @@
   const modules = [
     {
       id: "duelStats",
+
       label: "Duel Stats",
+
       description:
         "Recent duels, win rate & net value. Toggle the floating panel on or off.",
+
       isActive: () => duelWidgetVisible,
+
       toggle: () => setDuelWidgetVisible(!duelWidgetVisible),
 
       renderContent() {
@@ -720,11 +696,9 @@
               <div class="am-module-desc">${escapeHtml(this.description)}</div>
             </div>
 
-            <div
-              class="am-toggle ${this.isActive() ? "on" : ""}"
-              data-no-drag
-              id="am-duelstats-toggle"
-            >
+            <div class="am-toggle ${
+              this.isActive() ? "on" : ""
+            }" data-no-drag id="am-duelstats-toggle">
               <div class="am-toggle-knob"></div>
             </div>
           </div>
@@ -733,49 +707,51 @@
             <div class="am-mini-box">
               <div class="am-mini-label">W-L</div>
               <div class="am-mini-value">
-                <span style="color:#4caf50">${stats.wins}</span>-<span style="color:#f44336">${stats.losses}</span>
+                <span style="color:#4caf50">${stats.wins}</span>-
+                <span style="color:#f44336">${stats.losses}</span>
               </div>
             </div>
 
             <div class="am-mini-box">
               <div class="am-mini-label">Win rate</div>
-              <div
-                class="am-mini-value"
-                style="color:${stats.total > 0 ? winRateColor : "#cfd3d6"}"
-              >
-                ${stats.total > 0 ? stats.winRate.toFixed(1) + "%" : "-"}
+              <div class="am-mini-value"
+                   style="color:${
+                     stats.total > 0 ? winRateColor : "#cfd3d6"
+                   }">
+                ${
+                  stats.total > 0
+                    ? stats.winRate.toFixed(1) + "%"
+                    : "-"
+                }
               </div>
             </div>
 
             <div class="am-mini-box">
               <div class="am-mini-label">Net</div>
-              <div
-                class="am-mini-value"
-                style="color:${netColor}"
-              >
+              <div class="am-mini-value"
+                   style="color:${netColor}">
                 ${fmtSigned(toKeys(stats.net))}
               </div>
             </div>
           </div>
 
           <div class="am-info-box">
-            <strong>How this works:</strong> no history endpoint exists, so AcroMod polls
-            <code>GET /api/duels</code> on an interval and diffs each response against an
-            in-memory snapshot. The instant a tracked duel's <code>winner</code> field
-            flips from unset, the result is parsed and pushed into
-            <code>localStorage</code> - so your stats persist across reloads, but only
-            duels resolved while AcroMod was actively polling get captured.
+            <strong>How this works:</strong> no history endpoint exists,
+            so AcroMod polls <code>GET /api/duels</code> and tracks
+            duels involving your account.
           </div>
 
           <div class="am-info-box">
-            AcroMod has captured <strong>${stats.total}</strong> duel${stats.total === 1 ? "" : "s"}
-            so far - only counted while it's been running.
+            AcroMod has captured
+            <strong>${stats.total}</strong>
+            duel${stats.total === 1 ? "" : "s"} so far.
           </div>
         `;
       },
 
       bind(contentEl) {
-        const toggleEl = contentEl.querySelector("#am-duelstats-toggle");
+        const toggleEl =
+          contentEl.querySelector("#am-duelstats-toggle");
 
         if (toggleEl) {
           toggleEl.addEventListener("click", () => {
@@ -783,14 +759,20 @@
             renderAcroModMenu();
           });
         }
-      },
+      }
     },
 
     {
       id: "preferences",
+
       label: "Preferences",
-      description: "Small tweaks to clean up your experience.",
-      isActive: () => hideSoldToasts || hideSpamToasts,
+
+      description:
+        "Small tweaks to clean up your experience.",
+
+      isActive: () =>
+        hideSoldToasts || hideSpamToasts,
+
       toggle: () => {},
 
       renderContent() {
@@ -798,7 +780,9 @@
           <div class="am-module-header">
             <div>
               <div class="am-module-title">${escapeHtml(this.label)}</div>
-              <div class="am-module-desc">${escapeHtml(this.description)}</div>
+              <div class="am-module-desc">${escapeHtml(
+                this.description
+              )}</div>
             </div>
           </div>
 
@@ -807,16 +791,18 @@
               <div class="am-pref-label">
                 Hide successfully sold item messages
               </div>
+
               <div class="am-pref-desc">
-                Hides the green success popup that appears bottom-left after selling an item.
+                Hides the green success popup that appears bottom-left
+                after selling an item.
               </div>
             </div>
 
-            <div
-              class="am-toggle ${hideSoldToasts ? "on" : ""}"
+            <div class="am-toggle ${
+              hideSoldToasts ? "on" : ""
+            }"
               data-no-drag
-              id="am-pref-hide-sold"
-            >
+              id="am-pref-hide-sold">
               <div class="am-toggle-knob"></div>
             </div>
           </div>
@@ -826,16 +812,18 @@
               <div class="am-pref-label">
                 Hide "Please dont spam the crate opening!" messages
               </div>
+
               <div class="am-pref-desc">
-                Hides the red error popup that appears bottom-left when opening crates too fast.
+                Hides the red error popup that appears bottom-left
+                when opening crates too fast.
               </div>
             </div>
 
-            <div
-              class="am-toggle ${hideSpamToasts ? "on" : ""}"
+            <div class="am-toggle ${
+              hideSpamToasts ? "on" : ""
+            }"
               data-no-drag
-              id="am-pref-hide-spam"
-            >
+              id="am-pref-hide-spam">
               <div class="am-toggle-knob"></div>
             </div>
           </div>
@@ -843,7 +831,8 @@
       },
 
       bind(contentEl) {
-        const soldEl = contentEl.querySelector("#am-pref-hide-sold");
+        const soldEl =
+          contentEl.querySelector("#am-pref-hide-sold");
 
         if (soldEl) {
           soldEl.addEventListener("click", () => {
@@ -852,7 +841,8 @@
           });
         }
 
-        const spamEl = contentEl.querySelector("#am-pref-hide-spam");
+        const spamEl =
+          contentEl.querySelector("#am-pref-hide-spam");
 
         if (spamEl) {
           spamEl.addEventListener("click", () => {
@@ -860,73 +850,96 @@
             renderAcroModMenu();
           });
         }
-      },
-    },
+      }
+    }
   ];
 
-  const savedTabId = loadJSON(ACROMOD_TAB_KEY, null);
+  const savedTabId =
+    loadJSON(ACROMOD_TAB_KEY, null);
 
-  let selectedModuleId = modules.some(
-    (m) => m.id === savedTabId
-  )
-    ? savedTabId
-    : modules[0]?.id ?? null;
+  let selectedModuleId =
+    modules.some((m) => m.id === savedTabId)
+      ? savedTabId
+      : modules[0]?.id ?? null;
 
   function renderAcroModMenu() {
     ensureStyles();
 
-    let container = document.getElementById("acromod-menu");
+    let container =
+      document.getElementById("acromod-menu");
+
     let isNew = false;
 
     if (!container) {
       isNew = true;
-      container = document.createElement("div");
+
+      container =
+        document.createElement("div");
+
       container.id = "acromod-menu";
+
       document.body.appendChild(container);
     }
 
     const activeModule =
-      modules.find((m) => m.id === selectedModuleId) ||
-      modules[0] ||
-      null;
+      modules.find(
+        (m) => m.id === selectedModuleId
+      ) || modules[0] || null;
 
-    const username = getOwnUsername();
+    const username =
+      getOwnUsername();
 
-    const sidebarHtml = modules
-      .map(
-        (m) => `
-        <div
-          class="am-nav-item ${m.id === activeModule?.id ? "am-active" : ""}"
-          data-module-id="${m.id}"
-        >
-          <span>${escapeHtml(m.label)}</span>
-          <span class="am-nav-dot ${m.isActive() ? "on" : ""}"></span>
-        </div>
-      `
-      )
-      .join("");
+    const sidebarHtml =
+      modules
+        .map(
+          (m) => `
+          <div class="am-nav-item ${
+            m.id === activeModule?.id
+              ? "am-active"
+              : ""
+          }"
+            data-module-id="${m.id}">
 
-    const contentHtml = activeModule
-      ? activeModule.renderContent()
-      : `<div class="am-module-desc">No module selected.</div>`;
+            <span>${escapeHtml(m.label)}</span>
+
+            <span class="am-nav-dot ${
+              m.isActive() ? "on" : ""
+            }"></span>
+          </div>
+        `
+        )
+        .join("");
+
+    const contentHtml =
+      activeModule
+        ? activeModule.renderContent()
+        : `<div class="am-module-desc">
+             No module selected.
+           </div>`;
 
     container.innerHTML = `
       <div class="am-header" id="acromod-header">
+
         <span class="am-header-right">
           <img
             class="am-logo-img"
             src="${ACROMOD_LOGO_URL}"
             alt=""
           />
-          <span class="am-title">AcroMod</span>
+
+          <span class="am-title">
+            AcroMod
+          </span>
         </span>
 
         <span class="am-header-left">
           v${ACROMOD_VERSION}
         </span>
+
       </div>
 
       <div class="am-body">
+
         <div class="am-sidebar">
           ${sidebarHtml}
         </div>
@@ -934,6 +947,7 @@
         <div class="am-content">
           ${contentHtml}
         </div>
+
       </div>
 
       <div class="am-footer">
@@ -949,32 +963,48 @@
       </div>
     `;
 
-    container.style.display = acroModOpen ? "flex" : "none";
+    container.style.display =
+      acroModOpen ? "flex" : "none";
 
     if (isNew) {
-      placePanel(container, ACROMOD_POS_KEY, {
-        left: "20px",
-        top: "70px",
-      });
+      placePanel(
+        container,
+        ACROMOD_POS_KEY,
+        {
+          left: "20px",
+          top: "70px"
+        }
+      );
     }
 
-    container.querySelectorAll(".am-nav-item").forEach((el) => {
-      el.addEventListener("click", () => {
-        selectedModuleId = el.dataset.moduleId;
-        saveJSON(ACROMOD_TAB_KEY, selectedModuleId);
-        renderAcroModMenu();
+    container
+      .querySelectorAll(".am-nav-item")
+      .forEach((el) => {
+        el.addEventListener("click", () => {
+
+          selectedModuleId =
+            el.dataset.moduleId;
+
+          saveJSON(
+            ACROMOD_TAB_KEY,
+            selectedModuleId
+          );
+
+          renderAcroModMenu();
+        });
       });
-    });
 
     if (activeModule?.bind) {
-      const contentEl = container.querySelector(".am-content");
+      const contentEl =
+        container.querySelector(".am-content");
 
       if (contentEl) {
         activeModule.bind(contentEl);
       }
     }
 
-    const header = document.getElementById("acromod-header");
+    const header =
+      document.getElementById("acromod-header");
 
     if (header) {
       makeDraggable(
@@ -987,14 +1017,20 @@
 
   function setAcroModOpen(open) {
     acroModOpen = open;
-    saveJSON(ACROMOD_OPEN_KEY, acroModOpen);
+
+    saveJSON(
+      ACROMOD_OPEN_KEY,
+      acroModOpen
+    );
+
     renderAcroModMenu();
   }
 
   document.addEventListener("keydown", (evt) => {
     if (evt.key !== "F2") return;
 
-    const tag = document.activeElement?.tagName;
+    const tag =
+      document.activeElement?.tagName;
 
     if (
       tag === "INPUT" ||
@@ -1005,6 +1041,7 @@
     }
 
     evt.preventDefault();
+
     setAcroModOpen(!acroModOpen);
   });
 
@@ -1026,12 +1063,20 @@
 
   function setHideSoldToasts(value) {
     hideSoldToasts = value;
-    saveJSON(PREF_HIDE_SOLD_KEY, hideSoldToasts);
+
+    saveJSON(
+      PREF_HIDE_SOLD_KEY,
+      hideSoldToasts
+    );
   }
 
   function setHideSpamToasts(value) {
     hideSpamToasts = value;
-    saveJSON(PREF_HIDE_SPAM_KEY, hideSpamToasts);
+
+    saveJSON(
+      PREF_HIDE_SPAM_KEY,
+      hideSpamToasts
+    );
   }
 
   const SOLD_MESSAGE_RE =
@@ -1042,7 +1087,9 @@
 
   function maybeHideToast(toastEl) {
     const message =
-      toastEl.querySelector(".iziToast-message")?.textContent || "";
+      toastEl.querySelector(
+        ".iziToast-message"
+      )?.textContent || "";
 
     const isSoldToast =
       SOLD_MESSAGE_RE.test(message);
@@ -1055,8 +1102,9 @@
       (isSpamToast && hideSpamToasts)
     ) {
       const capsule =
-        toastEl.closest(".iziToast-capsule") ||
-        toastEl;
+        toastEl.closest(
+          ".iziToast-capsule"
+        ) || toastEl;
 
       capsule.remove();
     }
@@ -1077,11 +1125,13 @@
 
   new MutationObserver((mutations) => {
     for (const mutation of mutations) {
-      mutation.addedNodes.forEach(handleAddedNode);
+      mutation.addedNodes.forEach(
+        handleAddedNode
+      );
     }
   }).observe(document.body, {
     childList: true,
-    subtree: true,
+    subtree: true
   });
 
   // =========================================================================
@@ -1113,20 +1163,26 @@
   let visibleCount = 30;
 
   let duelWidgetVisible =
-    loadJSON(DUEL_VISIBLE_KEY, true);
+    loadJSON(
+      DUEL_VISIBLE_KEY,
+      true
+    );
 
   const tracked = new Map();
 
   const USERNAME_SELECTORS = [
     '#username-label span[style*="color"]',
     "a.selfProfile.profile-link span[style]",
-    'a.menu-item[href^="/profile/"] span[style*="color"]',
+    'a.menu-item[href^="/profile/"] span[style*="color"]'
   ];
 
   function getOwnUsername() {
     for (const sel of USERNAME_SELECTORS) {
-      const el = document.querySelector(sel);
-      const text = el?.textContent.trim();
+      const el =
+        document.querySelector(sel);
+
+      const text =
+        el?.textContent.trim();
 
       if (text) return text;
     }
@@ -1143,7 +1199,8 @@
 
   function itemsTotal(items) {
     return (items || []).reduce(
-      (sum, i) => sum + (i.item?.price ?? 0),
+      (sum, i) =>
+        sum + (i.item?.price ?? 0),
       0
     );
   }
@@ -1153,7 +1210,7 @@
       name: i.item.name,
       image: i.item.image,
       price: i.item.price,
-      paint: i.item.paint,
+      paint: i.item.paint
     }));
   }
 
@@ -1169,11 +1226,19 @@
   }
 
   function ensurePanelsExist() {
-    if (!document.getElementById("acromod-menu")) {
+    if (
+      !document.getElementById(
+        "acromod-menu"
+      )
+    ) {
       renderAcroModMenu();
     }
 
-    if (!document.getElementById(WIDGET_ID)) {
+    if (
+      !document.getElementById(
+        WIDGET_ID
+      )
+    ) {
       renderDuelWidget();
     }
   }
@@ -1181,47 +1246,61 @@
   async function poll() {
     ensurePanelsExist();
 
-    const username = getOwnUsername();
+    const username =
+      getOwnUsername();
 
     if (!username) return;
 
     let duels;
 
     try {
-      const res = await fetch(
-        DUELS_ENDPOINT,
-        {
-          credentials: "include",
-        }
-      );
+      const res =
+        await fetch(
+          DUELS_ENDPOINT,
+          {
+            credentials: "include"
+          }
+        );
 
       if (!res.ok) {
-        throw new Error("HTTP " + res.status);
+        throw new Error(
+          "HTTP " + res.status
+        );
       }
 
       duels = await res.json();
+
     } catch (err) {
       return;
     }
 
-    const currentIds = new Set();
+    const currentIds =
+      new Set();
 
     for (const duel of duels) {
       currentIds.add(duel.id);
 
       const isCreator =
-        duel.creator?.username === username;
+        duel.creator?.username ===
+        username;
 
       const isJoiner =
-        duel.joiner?.username === username;
+        duel.joiner?.username ===
+        username;
 
-      if (!isCreator && !isJoiner) continue;
+      if (!isCreator && !isJoiner) {
+        continue;
+      }
 
-      const prev = tracked.get(duel.id);
+      const prev =
+        tracked.get(duel.id);
 
-      tracked.set(duel.id, {
-        winner: duel.winner,
-      });
+      tracked.set(
+        duel.id,
+        {
+          winner: duel.winner
+        }
+      );
 
       const justResolved =
         duel.winner > 0 &&
@@ -1236,7 +1315,11 @@
       }
     }
 
-    for (const id of Array.from(tracked.keys())) {
+    for (
+      const id of Array.from(
+        tracked.keys()
+      )
+    ) {
       if (!currentIds.has(id)) {
         tracked.delete(id);
       }
@@ -1248,7 +1331,11 @@
     username,
     isCreator
   ) {
-    if (log.some((e) => e.id === duel.id)) {
+    if (
+      log.some(
+        (e) => e.id === duel.id
+      )
+    ) {
       return;
     }
 
@@ -1279,23 +1366,30 @@
       timestamp: Date.now(),
       won,
       opponentUsername:
-        opponent?.username ?? "Unknown",
+        opponent?.username ??
+        "Unknown",
       selfItems:
-        simplifyItems(self?.items),
+        simplifyItems(
+          self?.items
+        ),
       opponentItems:
-        simplifyItems(opponent?.items),
+        simplifyItems(
+          opponent?.items
+        ),
       selfValue,
       opponentValue,
       netChange:
         won
           ? opponentValue
-          : -selfValue,
+          : -selfValue
     };
 
     log.push(entry);
 
     saveLog();
+
     renderDuelWidget();
+
     renderAcroModMenu();
   }
 
@@ -1327,7 +1421,7 @@
       losses,
       total,
       winRate,
-      net,
+      net
     };
   }
 
@@ -1335,20 +1429,24 @@
     return items
       .map(
         (i) => `
-        <img
-          src="${escapeHtml(i.image)}"
-          alt="${escapeHtml(i.name)}"
-          title="${escapeHtml(i.name)} - ${fmt(toKeys(i.price))}"
-          style="
-            width:28px;
-            height:28px;
-            object-fit:contain;
-            border-radius:4px;
-            background:#0f1113;
-            margin:2px;
-          "
-        />
-      `
+          <img
+            src="${escapeHtml(i.image)}"
+            alt="${escapeHtml(i.name)}"
+            title="${escapeHtml(
+              i.name
+            )} - ${fmt(
+              toKeys(i.price)
+            )}"
+            style="
+              width:28px;
+              height:28px;
+              object-fit:contain;
+              border-radius:4px;
+              background:#0f1113;
+              margin:2px;
+            "
+          />
+        `
       )
       .join("");
   }
@@ -1357,7 +1455,9 @@
     ensureStyles();
 
     let container =
-      document.getElementById(WIDGET_ID);
+      document.getElementById(
+        WIDGET_ID
+      );
 
     let isNew = false;
 
@@ -1367,7 +1467,8 @@
       container =
         document.createElement("div");
 
-      container.id = WIDGET_ID;
+      container.id =
+        WIDGET_ID;
 
       document.body.appendChild(
         container
@@ -1378,7 +1479,7 @@
         DUEL_POS_KEY,
         {
           right: "12px",
-          bottom: "12px",
+          bottom: "12px"
         }
       );
     }
@@ -1431,6 +1532,7 @@
 
           return `
             <div class="dl-entry">
+
               <div class="dl-entry-top">
                 <span>
                   <span class="dl-badge ${
@@ -1438,20 +1540,28 @@
                       ? "win"
                       : "loss"
                   }">
-                    ${e.won ? "WIN" : "LOSS"}
+                    ${
+                      e.won
+                        ? "WIN"
+                        : "LOSS"
+                    }
                   </span>
+
                   vs
-                  <b>${escapeHtml(
-                    e.opponentUsername
-                  )}</b>
+                  <b>
+                    ${escapeHtml(
+                      e.opponentUsername
+                    )}
+                  </b>
                 </span>
 
                 <span
                   class="dl-net"
-                  style="color:${netColorEntry}"
-                >
+                  style="color:${netColorEntry}">
                   ${fmtSigned(
-                    toKeys(e.netChange)
+                    toKeys(
+                      e.netChange
+                    )
                   )}
                 </span>
               </div>
@@ -1463,6 +1573,7 @@
               </div>
 
               <div class="dl-sides">
+
                 <div class="dl-side">
                   <div class="dl-side-label">
                     Your items
@@ -1502,7 +1613,9 @@
                     )}
                   </div>
                 </div>
+
               </div>
+
             </div>
           `;
         })
@@ -1513,8 +1626,7 @@
         ? `
           <button
             class="dl-show-more"
-            id="dl-more"
-          >
+            id="dl-more">
             Show ${Math.min(
               remaining,
               30
@@ -1526,22 +1638,24 @@
     container.innerHTML = `
       <div
         class="dl-header"
-        id="dl-header"
-      >
+        id="dl-header">
+
         <div class="dl-title-row">
+
           <span class="dl-title">
             Recent Duels
           </span>
 
           <span
             class="dl-close"
-            id="dl-close"
-          >
+            id="dl-close">
             hide
           </span>
+
         </div>
 
         <div class="dl-stats">
+
           <div class="dl-stat-box">
             <div class="dl-stat-label">
               Tracked W-L
@@ -1569,13 +1683,16 @@
                 stats.total > 0
                   ? winRateColor
                   : "#cfd3d6"
-              }"
-            >
+              }">
+
               ${
                 stats.total > 0
-                  ? stats.winRate.toFixed(1) + "%"
+                  ? stats.winRate.toFixed(
+                      1
+                    ) + "%"
                   : "-"
               }
+
             </div>
           </div>
 
@@ -1586,14 +1703,17 @@
 
             <div
               class="dl-stat-value"
-              style="color:${netColor}"
-            >
+              style="color:${netColor}">
               ${fmtSigned(
-                toKeys(stats.net)
+                toKeys(
+                  stats.net
+                )
               )}
             </div>
           </div>
+
         </div>
+
       </div>
 
       <div class="dl-body">
@@ -1650,7 +1770,7 @@
   }
 
   // =========================================================================
-  // Update check
+  // Update checker
   // =========================================================================
 
   function parseVersion(str) {
@@ -1675,8 +1795,7 @@
 
     for (
       let i = 0;
-      i <
-      Math.max(
+      i < Math.max(
         r.length,
         l.length
       );
@@ -1705,7 +1824,9 @@
 
     if (!toast) {
       toast =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       toast.id =
         "am-update-toast";
@@ -1717,16 +1838,17 @@
 
     toast.innerHTML = `
       <div class="am-update-title-row">
+
         <span class="am-update-title">
           Update available
         </span>
 
         <span
           class="am-update-close"
-          id="am-update-close"
-        >
+          id="am-update-close">
           &times;
         </span>
+
       </div>
 
       <div class="am-update-desc">
@@ -1739,8 +1861,7 @@
 
       <button
         class="am-update-btn"
-        id="am-update-btn"
-      >
+        id="am-update-btn">
         Update now
       </button>
     `;
@@ -1766,24 +1887,32 @@
     };
   }
 
+  let updateCheckInProgress =
+    false;
+
   async function checkForUpdate() {
+    if (updateCheckInProgress) {
+      return;
+    }
+
+    updateCheckInProgress = true;
+
     try {
       const url =
         UPDATE_URL +
         "?update_check=" +
         Date.now();
 
-      const res = await fetch(
-        url,
-        {
+      const res =
+        await fetch(url, {
           method: "GET",
-          cache: "no-store",
-        }
-      );
+          cache: "no-store"
+        });
 
       if (!res.ok) {
         throw new Error(
-          "HTTP " + res.status
+          "HTTP " +
+          res.status
         );
       }
 
@@ -1822,11 +1951,13 @@
             remoteVersion
           );
         }
-
-        return;
       }
+
     } catch (err) {
       // Silently ignore update-check errors.
+    } finally {
+      updateCheckInProgress =
+        false;
     }
   }
 
@@ -1838,22 +1969,67 @@
   renderDuelWidget();
 
   poll();
-
   setInterval(
     poll,
     POLL_INTERVAL_MS
   );
 
+  // Check immediately on startup.
   checkForUpdate();
 
+  // Fallback update check every 5 minutes.
   setInterval(
     checkForUpdate,
     UPDATE_CHECK_INTERVAL_MS
   );
 
+  // Check when the SPA changes URL using pushState.
+  const originalPushState =
+    history.pushState;
+
+  history.pushState =
+    function (...args) {
+      const result =
+        originalPushState.apply(
+          this,
+          args
+        );
+
+      checkForUpdate();
+
+      return result;
+    };
+
+  // Check when the SPA changes URL using replaceState.
+  const originalReplaceState =
+    history.replaceState;
+
+  history.replaceState =
+    function (...args) {
+      const result =
+        originalReplaceState.apply(
+          this,
+          args
+        );
+
+      checkForUpdate();
+
+      return result;
+    };
+
+  // Check when navigating back/forward.
+  window.addEventListener(
+    "popstate",
+    checkForUpdate
+  );
+
+  // Keep panels alive if the site replaces body content.
   new MutationObserver(
     ensurePanelsExist
-  ).observe(document.body, {
-    childList: true,
-  });
+  ).observe(
+    document.body,
+    {
+      childList: true
+    }
+  );
 })();
