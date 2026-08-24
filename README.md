@@ -32,21 +32,18 @@ Versions are tracked using the userscript version number:
 
 ## Installation
 
-To use AcroMod, you need:
+AcroMod requires [Tampermonkey](https://www.tampermonkey.net/) to run.
 
-* [Tampermonkey](https://www.tampermonkey.net/)
-* Access to RLSimulator
-* The official AcroMod userscript
+### Install AcroMod
 
-Install the `.user.js` file through the official AcroMod installation link.
+1. Install **Tampermonkey** if you haven't already.
+2. Click the **[Install AcroMod](https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js)** link.
+3. Tampermonkey will open the installation page.
+4. Click **Install**.
 
-## Usage
+That's it. AcroMod will automatically be installed and ready to use on RLSimulator.
 
-After installing AcroMod:
-
-1. Open **RLSimulator**.
-2. Press **F2** to open the AcroMod menu.
-3. Use the available features from the menu.
+> **Note:** You do not need to manually download or install the `.js` file. Tampermonkey handles the installation and future updates automatically.
 
 ## Updates
 
