@@ -447,7 +447,7 @@
           <img class="am-logo-img" src="${ACROMOD_LOGO_URL}" alt="" />
           <span class="am-title">AcroMod</span>
         </span>
-        <span class="am-header-left">v1.0</span>
+        <span class="am-header-left">v1.0 TEST FOR UPDATE</span>
       </div>
       <div class="am-body">
         <div class="am-sidebar">${sidebarHtml}</div>
