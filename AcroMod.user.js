@@ -2,7 +2,7 @@
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
 // @version      1.0
-// @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2.
+// @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2. Includes Duel Stats (tracks your own duel results, since the site's API only exposes currently-open duels) and Preferences (toast-hiding toggles).
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
 // @icon         https://rlsimulator.com/favicon.ico
@@ -30,10 +30,24 @@
  *  - Preferences: toggles that watch for iziToast notification popups
  *    (sell confirmations, crate-opening rate-limit warnings) and remove
  *    them from the DOM before they're seen, based on their message text.
+ *
+ *  - Update check: on load, and then hourly, fetches the @version from
+ *    the raw GitHub copy of this script. If it's newer than the running
+ *    version, a small toast prompts the user to update - clicking it
+ *    opens the raw file URL, which Tampermonkey recognizes as an
+ *    install/update page.
  * -----------------------------------------------------------------------
  */
 (function () {
   "use strict";
+
+  // Keep this in sync with the @version header above - it's what gets
+  // shown in the menu and compared against the GitHub copy to detect
+  // updates.
+  const ACROMOD_VERSION = "1.0";
+  const UPDATE_URL = "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
+  const UPDATE_CHECK_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
+  const UPDATE_DISMISSED_KEY = "acromod_update_dismissed_version_v1";
 
   // =========================================================================
   // Shared helpers (storage, drag, formatting)
@@ -274,6 +288,23 @@
       #dl-widget .dl-show-more { display: block; width: 100%; padding: 10px;
         background: none; border: none; color: #9aa0a6; cursor: pointer; font-size: 12px; }
       #dl-widget .dl-show-more:hover { color: #fff; }
+
+      /* ---- Update toast ---- */
+      #am-update-toast { position: fixed; top: 12px; right: 12px; width: 280px;
+        background: #17191c; color: #fff; border: 1px solid #2b2e33; border-radius: 10px;
+        font-family: sans-serif; font-size: 12.5px; z-index: 10001;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.5); padding: 12px 14px; }
+      #am-update-toast .am-update-title-row { display: flex; align-items: center;
+        justify-content: space-between; margin-bottom: 6px; }
+      #am-update-toast .am-update-title { font-weight: 700; font-size: 13px; }
+      #am-update-toast .am-update-close { color: #9aa0a6; cursor: pointer; font-size: 12px;
+        line-height: 1; padding: 2px; }
+      #am-update-toast .am-update-close:hover { color: #fff; }
+      #am-update-toast .am-update-desc { color: #9aa0a6; line-height: 1.5; margin-bottom: 10px; }
+      #am-update-toast .am-update-btn { background: #00966e; color: #fff; border: none;
+        border-radius: 6px; padding: 7px 12px; font-size: 12px; font-weight: 600;
+        cursor: pointer; width: 100%; }
+      #am-update-toast .am-update-btn:hover { background: #00c896; }
     `;
     document.head.appendChild(style);
   }
@@ -447,7 +478,7 @@
           <img class="am-logo-img" src="${ACROMOD_LOGO_URL}" alt="" />
           <span class="am-title">AcroMod</span>
         </span>
-        <span class="am-header-left">v1.0</span>
+        <span class="am-header-left">v${ACROMOD_VERSION}</span>
       </div>
       <div class="am-body">
         <div class="am-sidebar">${sidebarHtml}</div>
@@ -833,12 +864,89 @@
   }
 
   // =========================================================================
+  // Update check
+  // =========================================================================
+  // Compares this build's ACROMOD_VERSION against the @version header of
+  // the raw file on GitHub. raw.githubusercontent.com sends permissive
+  // CORS headers, so a plain fetch works without any @grant.
+
+  function parseVersion(str) {
+    return String(str)
+      .trim()
+      .split(".")
+      .map((part) => parseInt(part, 10) || 0);
+  }
+
+  function isNewerVersion(remote, local) {
+    const r = parseVersion(remote);
+    const l = parseVersion(local);
+    for (let i = 0; i < Math.max(r.length, l.length); i++) {
+      const rv = r[i] || 0;
+      const lv = l[i] || 0;
+      if (rv !== lv) return rv > lv;
+    }
+    return false;
+  }
+
+  function renderUpdateToast(remoteVersion) {
+    ensureStyles();
+    let toast = document.getElementById("am-update-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "am-update-toast";
+      document.body.appendChild(toast);
+    }
+
+    toast.innerHTML = `
+      <div class="am-update-title-row">
+        <span class="am-update-title">Update available</span>
+        <span class="am-update-close" id="am-update-close">&times;</span>
+      </div>
+      <div class="am-update-desc">
+        AcroMod v${escapeHtml(remoteVersion)} is out - you're on v${escapeHtml(ACROMOD_VERSION)}.
+      </div>
+      <button class="am-update-btn" id="am-update-btn">Update now</button>
+    `;
+
+    document.getElementById("am-update-close").onclick = () => {
+      saveJSON(UPDATE_DISMISSED_KEY, remoteVersion);
+      toast.remove();
+    };
+    document.getElementById("am-update-btn").onclick = () => {
+      window.open(UPDATE_URL, "_blank");
+    };
+  }
+
+  async function checkForUpdate() {
+    try {
+      const res = await fetch(UPDATE_URL + "?_=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const text = await res.text();
+
+      const match = text.match(/@version\s+([\w.\-]+)/);
+      if (!match) return;
+
+      const remoteVersion = match[1];
+      if (!isNewerVersion(remoteVersion, ACROMOD_VERSION)) return;
+
+      const dismissedVersion = loadJSON(UPDATE_DISMISSED_KEY, null);
+      if (dismissedVersion === remoteVersion) return; // already dismissed this one
+
+      renderUpdateToast(remoteVersion);
+    } catch (err) {
+      console.warn("[AcroMod] update check failed", err);
+    }
+  }
+
+  // =========================================================================
   // Boot
   // =========================================================================
   renderAcroModMenu();
   renderDuelWidget();
   poll();
   setInterval(poll, POLL_INTERVAL_MS);
+  checkForUpdate();
+  setInterval(checkForUpdate, UPDATE_CHECK_INTERVAL_MS);
 
   // Some routes (e.g. the dashboard) re-render in a way that wipes out
   // elements appended directly to <body>, including our panels. Watching
