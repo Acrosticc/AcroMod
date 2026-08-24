@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
-// @version      1.2
+// @version      1.0
 // @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2. Includes Duel Stats (tracks your own duel results, since the site's API only exposes currently-open duels) and Preferences (toast-hiding toggles).
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
@@ -44,7 +44,7 @@
   // Keep this in sync with the @version header above - it's what gets
   // shown in the menu and compared against the GitHub copy to detect
   // updates.
-  const ACROMOD_VERSION = "1.2";
+  const ACROMOD_VERSION = "1.0";
   const UPDATE_URL = "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
   const UPDATE_CHECK_INTERVAL_MS = 5 * 1000; // 5 seconds
   const UPDATE_DISMISSED_KEY = "acromod_update_dismissed_version_v1";
@@ -917,26 +917,67 @@
     };
   }
 
-  async function checkForUpdate() {
-    try {
-      const res = await fetch(UPDATE_URL + "?_=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const text = await res.text();
+async function checkForUpdate() {
+  try {
+    const url = UPDATE_URL + "?update_check=" + Date.now();
 
-      const match = text.match(/@version\s+([\w.\-]+)/);
-      if (!match) return;
+    console.log("[AcroMod] Checking GitHub for update...");
+    console.log("[AcroMod] URL:", url);
+    console.log("[AcroMod] Installed version:", ACROMOD_VERSION);
 
-      const remoteVersion = match[1];
-      if (!isNewerVersion(remoteVersion, ACROMOD_VERSION)) return;
+    const res = await fetch(url, {
+      method: "GET",
+      cache: "no-store"
+    });
+
+    console.log("[AcroMod] HTTP status:", res.status);
+    console.log("[AcroMod] Final URL:", res.url);
+
+    if (!res.ok) {
+      throw new Error("HTTP " + res.status);
+    }
+
+    const text = await res.text();
+
+    // Show the first part of what GitHub actually returned.
+    console.log(
+      "[AcroMod] GitHub response beginning:\n" +
+      text.substring(0, 500)
+    );
+
+    const match = text.match(/@version\s+([^\s]+)/i);
+
+    if (!match) {
+      console.warn("[AcroMod] Could not find @version in GitHub response.");
+      return;
+    }
+
+    const remoteVersion = match[1].trim();
+
+    console.log(
+      `[AcroMod] VERSION CHECK → installed: ${ACROMOD_VERSION} | GitHub: ${remoteVersion}`
+    );
+
+    if (isNewerVersion(remoteVersion, ACROMOD_VERSION)) {
+      console.log("[AcroMod] NEW VERSION FOUND!");
 
       const dismissedVersion = loadJSON(UPDATE_DISMISSED_KEY, null);
-      if (dismissedVersion === remoteVersion) return; // already dismissed this one
 
-      renderUpdateToast(remoteVersion);
-    } catch (err) {
-      console.warn("[AcroMod] update check failed", err);
+      if (dismissedVersion !== remoteVersion) {
+        renderUpdateToast(remoteVersion);
+      } else {
+        console.log("[AcroMod] Update was previously dismissed.");
+      }
+
+      return;
     }
+
+    console.log("[AcroMod] No update available.");
+
+  } catch (err) {
+    console.warn("[AcroMod] Update check failed:", err);
   }
+}
 
   // =========================================================================
   // Boot
