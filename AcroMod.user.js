@@ -2,7 +2,6 @@
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
 // @version      1.0
-// @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2. Includes Duel Stats and Preferences.
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
 // @icon         https://rlsimulator.com/favicon.ico
