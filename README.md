@@ -54,14 +54,6 @@ AcroMod uses Tampermonkey's built-in update system.
 
 When a new version is released, the `@version` value in the userscript is increased. Tampermonkey checks the configured update URL and automatically updates the script when a newer version is available.
 
-### Example
-
-```javascript
-// @version      1.1
-```
-
-After making changes, the updated `AcroMod.user.js` is published to the repository. Existing users can then receive the update without having to reinstall the script manually.
-
 ## Staff Awareness
 
 AcroMod is intended for **regular RLSimulator users**.
