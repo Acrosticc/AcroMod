@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
-// @version      1.0
+// @version      1.2
 // @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2. Includes Duel Stats (tracks your own duel results, since the site's API only exposes currently-open duels) and Preferences (toast-hiding toggles).
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
@@ -44,7 +44,7 @@
   // Keep this in sync with the @version header above - it's what gets
   // shown in the menu and compared against the GitHub copy to detect
   // updates.
-  const ACROMOD_VERSION = "1.0";
+  const ACROMOD_VERSION = "1.2";
   const UPDATE_URL = "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
   const UPDATE_CHECK_INTERVAL_MS = 5 * 1000; // 5 seconds
   const UPDATE_DISMISSED_KEY = "acromod_update_dismissed_version_v1";
