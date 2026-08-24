@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
-// @version      1.1
+// @version      1.0
 // @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2.
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
@@ -39,7 +39,7 @@
 (function () {
   "use strict";
 
-  const ACROMOD_VERSION = "1.1";
+  const ACROMOD_VERSION = "1.0";
   const UPDATE_URL =
     "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
   const UPDATE_CHECK_INTERVAL_MS = 10 * 1000; // 10 seconds
