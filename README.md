@@ -10,7 +10,7 @@
 
 * Lightweight in-page interface.
 * Toggle the menu using **F2**.
-* Designed to remain unobtrusive during normal use.
+* Designed to remain unobtrusive during use.
 
 ### 🔧 Additional Features
 
