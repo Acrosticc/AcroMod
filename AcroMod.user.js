@@ -42,7 +42,7 @@
   const ACROMOD_VERSION = "1.1";
   const UPDATE_URL =
     "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
-  const UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+  const UPDATE_CHECK_INTERVAL_MS = 10 * 1000; // 10 seconds
   const UPDATE_DISMISSED_KEY = "acromod_update_dismissed_version_v1";
 
   // =========================================================================
