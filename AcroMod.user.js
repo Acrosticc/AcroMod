@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
-// @version      1.0
+// @version      1.1
 // @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2. Includes Duel Stats and Preferences.
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
@@ -15,7 +15,7 @@
 (function () {
   "use strict";
 
-  const ACROMOD_VERSION = "1.0";
+  const ACROMOD_VERSION = "1.1";
   const UPDATE_URL = "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
 
   // Update checker
@@ -736,9 +736,12 @@
           </div>
 
           <div class="am-info-box">
-            <strong>How this works:</strong> no history endpoint exists,
-            so AcroMod polls <code>GET /api/duels</code> and tracks
-            duels involving your account.
+            <strong>How this works:</strong> No history endpoint exists, so AcroMod polls
+            <code>GET /api/duels</code> on an interval and diffs each response against an
+            in-memory snapshot. The instant a tracked duel's <code>winner</code> field
+            flips from unset, the result is parsed and pushed into
+            <code>localStorage</code> - so your stats persist across reloads, but only
+            duels resolved while AcroMod was actively polling get captured.
           </div>
 
           <div class="am-info-box">
