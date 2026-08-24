@@ -1,10 +1,10 @@
 # AcroMod
 
-**AcroMod** is a lightweight Tampermonkey userscript for **RLSimulator**, designed to add useful quality-of-life features and an in-page menu while keeping the experience simple and unobtrusive.
+**AcroMod** is a lightweight Tampermonkey userscript for **RLSimulator**, adding useful quality-of-life features and an in-page menu while keeping the experience simple and unobtrusive.
 
 > ℹ️ **Staff Awareness:** RLSimulator staff are aware of AcroMod and its use by players.
 
-## Features
+## ✨ Features
 
 ### 🎛️ In-Page Menu
 
@@ -12,61 +12,61 @@
 * Toggle the menu using **F2**.
 * Designed to remain unobtrusive during normal use.
 
-### 🔧 Mod Features
+### 🔧 Additional Features
 
-AcroMod provides additional functionality directly within RLSimulator.
+AcroMod adds additional functionality directly within RLSimulator.
 
-More features will be added and improved over time as development continues.
+More features and improvements will be added over time.
 
-### 🔄 Automatic Updates
+## 📥 Installation
 
-AcroMod supports automatic updates through Tampermonkey.
-
-Once installed, users don't need to manually reinstall the script whenever a new version is released. When an updated version is published, Tampermonkey can automatically detect and install it.
-
-Versions are tracked using the userscript version number:
-
-```text
-1.0 → 1.1 → 1.2 → 2.0
-```
-
-## Installation
-
-AcroMod requires [Tampermonkey](https://www.tampermonkey.net/) to run.
+AcroMod requires **[Tampermonkey](https://www.tampermonkey.net/)**.
 
 ### Install AcroMod
 
-1. Install **Tampermonkey** if you haven't already.
-2. Click the **[Install AcroMod](https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js)** link.
+**[➡️ Install AcroMod](https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js)**
+
+1. Install Tampermonkey if you haven't already.
+2. Click **Install AcroMod** above.
 3. Tampermonkey will open the installation page.
 4. Click **Install**.
 
-That's it. AcroMod will automatically be installed and ready to use on RLSimulator.
+That's it! AcroMod will now be installed and ready to use on RLSimulator.
 
-> **Note:** You do not need to manually download or install the `.js` file. Tampermonkey handles the installation and future updates automatically.
+> **Note:** You do not need to manually download or install any files. Tampermonkey handles the installation for you.
 
-## Updates
+## 🎮 Usage
 
-AcroMod uses Tampermonkey's built-in update system.
+After installing AcroMod:
 
-When a new version is released, the `@version` value in the userscript is increased. Tampermonkey checks the configured update URL and automatically updates the script when a newer version is available.
+1. Open **RLSimulator**.
+2. Press **F2** to open or close the AcroMod menu.
+3. Use the available features from the menu.
 
-## Staff Awareness
+## 🔄 Automatic Updates
+
+AcroMod automatically updates through Tampermonkey.
+
+You **do not need to reinstall AcroMod** when a new version is released.
+
+Simply keep AcroMod installed and Tampermonkey will automatically check for and install available updates.
+
+> **No action is required from you when AcroMod is updated.**
+
+## 👮 Staff Awareness
 
 AcroMod is intended for **regular RLSimulator users**.
 
 RLSimulator staff are aware that AcroMod exists and are aware of its use by players.
 
-## Disclaimer
+## ⚠️ Disclaimer
 
-AcroMod is an independent userscript and is not an official RLSimulator product unless explicitly stated otherwise.
+AcroMod is an independent userscript and is **not an official RLSimulator product**, unless explicitly stated otherwise.
 
-Use the modification at your own discretion.
+Use AcroMod at your own discretion.
 
-## Current Version
+## 📌 Current Version
 
 **Version:** `1.0`
 
 **Status:** Active development
-
-More features and improvements will be added in future releases.
