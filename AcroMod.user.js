@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
-// @version      1.0
+// @version      1.1
 // @description  AcroMod - a lightweight in-page menu for RLSimulator, toggled with F2.
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
