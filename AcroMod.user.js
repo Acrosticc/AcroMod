@@ -764,7 +764,7 @@
         "Small tweaks to clean up your experience.",
 
       isActive: () =>
-        hideSoldToasts || hideSpamToasts,
+        hideSoldToasts || hideSpamToasts || hideDuelResultToasts,
 
       toggle: () => {},
 
@@ -820,6 +820,26 @@
               <div class="am-toggle-knob"></div>
             </div>
           </div>
+
+          <div class="am-pref-row">
+            <div>
+              <div class="am-pref-label">
+                Hide duel results messages
+              </div>
+
+              <div class="am-pref-desc">
+                Hides the won/lost duel result message popup that appears bottom-left
+              </div>
+            </div>
+
+            <div class="am-toggle ${
+              hideDuelResultToasts ? "on" : ""
+            }"
+              data-no-drag
+              id="am-pref-hide-duel-result">
+              <div class="am-toggle-knob"></div>
+            </div>
+          </div>
         `;
       },
 
@@ -840,6 +860,16 @@
         if (spamEl) {
           spamEl.addEventListener("click", () => {
             setHideSpamToasts(!hideSpamToasts);
+            renderAcroModMenu();
+          });
+        }
+
+        const duelResultEl =
+          contentEl.querySelector("#am-pref-hide-duel-result");
+
+        if (duelResultEl) {
+          duelResultEl.addEventListener("click", () => {
+            setHideDuelResultToasts(!hideDuelResultToasts);
             renderAcroModMenu();
           });
         }
@@ -1048,11 +1078,17 @@
   const PREF_HIDE_SPAM_KEY =
     "acromod_hide_spam_toast_v1";
 
+  const PREF_HIDE_DUEL_RESULT_KEY =
+    "acromod_hide_duel_result_toast_v1";
+
   let hideSoldToasts =
     loadJSON(PREF_HIDE_SOLD_KEY, false);
 
   let hideSpamToasts =
     loadJSON(PREF_HIDE_SPAM_KEY, false);
+
+  let hideDuelResultToasts =
+    loadJSON(PREF_HIDE_DUEL_RESULT_KEY, false);
 
   function setHideSoldToasts(value) {
     hideSoldToasts = value;
@@ -1069,6 +1105,15 @@
     saveJSON(
       PREF_HIDE_SPAM_KEY,
       hideSpamToasts
+    );
+  }
+
+  function setHideDuelResultToasts(value) {
+    hideDuelResultToasts = value;
+
+    saveJSON(
+      PREF_HIDE_DUEL_RESULT_KEY,
+      hideDuelResultToasts
     );
   }
 
@@ -1090,9 +1135,16 @@
     const isSpamToast =
       SPAM_MESSAGE_RE.test(message);
 
+    // The site reuses this same id for both the "Win" and "Lose"
+    // duel-result toast, so matching on it covers both outcomes
+    // without needing separate message patterns.
+    const isDuelResultToast =
+      toastEl.id === "duel-result";
+
     if (
       (isSoldToast && hideSoldToasts) ||
-      (isSpamToast && hideSpamToasts)
+      (isSpamToast && hideSpamToasts) ||
+      (isDuelResultToast && hideDuelResultToasts)
     ) {
       const capsule =
         toastEl.closest(
@@ -1153,7 +1205,7 @@
   let log =
     loadJSON(LOG_KEY, []);
 
-  let visibleCount = 30;
+  let visibleCount = 15;
 
   let duelWidgetVisible =
     loadJSON(
@@ -1622,7 +1674,7 @@
             id="dl-more">
             Show ${Math.min(
               remaining,
-              30
+              15
             )} more (${remaining} left)
           </button>
         `
@@ -1743,7 +1795,7 @@
 
     if (moreBtn) {
       moreBtn.onclick = () => {
-        visibleCount += 30;
+        visibleCount += 15;
         renderDuelWidget();
       };
     }
