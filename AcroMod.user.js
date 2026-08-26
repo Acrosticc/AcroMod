@@ -828,7 +828,7 @@
               </div>
 
               <div class="am-pref-desc">
-                Hides the won/lost duel result message popup that appears bottom-left
+                Hides the won/lost duel result popup that appears bottom-left.
               </div>
             </div>
 
@@ -1675,10 +1675,19 @@
             Show ${Math.min(
               remaining,
               15
-            )} more (${remaining} left)
+            )} more
           </button>
         `
         : "";
+
+    // Rebuilding container.innerHTML wipes .dl-body's scroll position,
+    // which is jarring when clicking "Show more" mid-list - capture it
+    // here and restore it right after the rebuild below.
+    const previousBody =
+      container.querySelector(".dl-body");
+
+    const previousScrollTop =
+      previousBody ? previousBody.scrollTop : 0;
 
     container.innerHTML = `
       <div
@@ -1770,6 +1779,13 @@
         ${showMoreHtml}
       </div>
     `;
+
+    const newBody =
+      container.querySelector(".dl-body");
+
+    if (newBody) {
+      newBody.scrollTop = previousScrollTop;
+    }
 
     const closeBtn =
       document.getElementById(
