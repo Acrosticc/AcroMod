@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
-// @version      1.0
+// @version      1.1
 // @description  AcroMod - RLSimulator Menu
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
@@ -15,7 +15,7 @@
 (function () {
   "use strict";
 
-  const ACROMOD_VERSION = "1.0";
+  const ACROMOD_VERSION = "1.1";
   const UPDATE_URL = "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
 
   // Update checker
