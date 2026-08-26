@@ -32,7 +32,7 @@ After installing AcroMod:
 
 AcroMod checks for a newer version automatically while you play RLSimulator (on load, every 5 minutes, and whenever you navigate).
 
-If a newer version is available, you'll see an **"Update required"** notice in the top-right corner of the page. This notice **cannot be dismissed** — it will keep reappearing until you update.
+If a newer version is available, you'll see an **"Update required"** notice in the top-right corner of the page. This notice **cannot be dismissed** - it will keep reappearing until you update.
 
 To update: click **Update now** and Tampermonkey will prompt you to install it - confirm the install and you're done.
 
