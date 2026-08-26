@@ -940,6 +940,15 @@
              No module selected.
            </div>`;
 
+    // Rebuilding container.innerHTML wipes .am-content's scroll
+    // position, which is jarring when toggling a preference mid-scroll -
+    // capture it here and restore it right after the rebuild below.
+    const previousContent =
+      container.querySelector(".am-content");
+
+    const previousScrollTop =
+      previousContent ? previousContent.scrollTop : 0;
+
     container.innerHTML = `
       <div class="am-header" id="acromod-header">
 
@@ -985,6 +994,13 @@
         <span class="am-footer-dot"></span>
       </div>
     `;
+
+    const newContent =
+      container.querySelector(".am-content");
+
+    if (newContent) {
+      newContent.scrollTop = previousScrollTop;
+    }
 
     container.style.display =
       acroModOpen ? "flex" : "none";
