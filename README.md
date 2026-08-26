@@ -34,13 +34,13 @@ AcroMod checks for a newer version automatically while you play RLSimulator (on 
 
 If a newer version is available, you'll see an **"Update required"** notice in the top-right corner of the page. This notice **cannot be dismissed** — it will keep reappearing until you update.
 
-To update: click **Update now** and Tampermonkey will prompt you to install it — confirm the install and you're done.
+To update: click **Update now** and Tampermonkey will prompt you to install it - confirm the install and you're done.
 
 > **Action is required from you when AcroMod is updated.** The update prompt is intentionally persistent so you can't keep using an outdated version by accident.
 
 ## 👮 Staff Awareness
 
-RLSimulator staff have been made aware of AcroMod and its use by players. RLSimulator staff has confirmed that using AcroMod's current feature set will not result in a ban. This is **not** a blanket endorsement of every future feature — see below.
+RLSimulator staff have been made aware of AcroMod and its use by players. RLSimulator staff has confirmed that using AcroMod's current feature set will not result in a ban. This is **not** a blanket endorsement of every future feature - see below.
 
 ## ✅ Feature Approval Policy
 
@@ -67,14 +67,14 @@ Use AcroMod at your own discretion.
 ### 🎛️ In-Page Menu
 * Lightweight in-page interface, styled to stay out of the way.
 * Toggle the menu open/closed using **F2**.
-* Fully draggable — reposition it anywhere on screen.
+* Fully draggable - reposition it anywhere on screen.
 * Remembers its position and open/closed state across page reloads and navigation.
 
 ### ⚔️ Duel Stats
-RLSimulator's API only exposes currently *open* duels — there's no endpoint for duel history. AcroMod works around this by polling for open duels on an interval and watching for your own duels to resolve, recording the result the moment it happens.
+RLSimulator's API only exposes currently *open* duels - there's no endpoint for duel history. AcroMod works around this by polling for open duels on an interval and watching for your own duels to resolve, recording the result the moment it happens.
 
 * Tracks your own duel wins and losses as they happen.
-* Shows a running **win/loss record**, **win rate**, and **net value** (items gained vs. lost) — both as a quick summary inside the menu and in a separate, more detailed floating panel.
+* Shows a running **win/loss record**, **win rate**, and **net value** (items gained vs. lost) - both as a quick summary inside the menu and in a separate, more detailed floating panel.
 * Floating panel lists your recent duels with item thumbnails for both sides, individually draggable and position-persistent.
 * Only duels resolved *while AcroMod is running* are captured — there is no way to retroactively pull past duel history, since the site itself doesn't expose it.
 * Panel can be shown or hidden from the menu at any time.
@@ -82,8 +82,8 @@ RLSimulator's API only exposes currently *open* duels — there's no endpoint fo
 ### 🔧 Preferences
 Small toggles to clean up notification clutter:
 
-* **Hide successfully sold item messages** — hides the green success popup shown after selling an item.
-* **Hide "Please dont spam the crate opening!" messages** — hides the red error popup shown when opening crates too fast.
-* **Hide duel results messages** — hides the won/lost duel result popup that appears bottom-left.
+* **Hide successfully sold item messages** - hides the green success popup shown after selling an item.
+* **Hide "Please dont spam the crate opening!" messages** - hides the red error popup shown when opening crates too fast.
+* **Hide duel results messages** - hides the won/lost duel result popup that appears bottom-left.
 
-More features and improvements will be added over time — see [Feature Approval Policy](#-feature-approval-policy) above for how new features are decided.
+More features and improvements will be added over time - see [Feature Approval Policy](#-feature-approval-policy) above for how new features are decided.
