@@ -48,7 +48,7 @@ To keep AcroMod's relationship with RLSimulator staff transparent and in good st
 
 * Every feature currently in AcroMod has been shared with and approved by RLSimulator staff.
 * Any new feature added in a future update will only ship once it has received explicit approval from staff.
-* If a feature has **not yet** received approval from all relevant staff members, it will **not** be included in AcroMod — not partially, not silently, not "for now." It simply waits until approval is given.
+* If a feature has **not yet** received approval from all relevant staff members, it will **not** be included in AcroMod - not partially, not silently, not "for now." It simply waits until approval is given.
 * This policy exists to protect users of AcroMod, not just the project itself - using an approved tool should never carry uncertainty about its standing.
 
 ## ⚠️ Disclaimer
