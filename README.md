@@ -40,8 +40,6 @@ To update: click **Update now** and Tampermonkey will prompt you to install it �
 
 ## 👮 Staff Awareness
 
-AcroMod is intended for **RLSimulator players**.
-
 RLSimulator staff have been made aware of AcroMod and its use by players. When asked about it, staff confirmed that using AcroMod's current feature set will not result in a ban. This is **not** a blanket endorsement of every future feature — see below.
 
 ## ✅ Feature Approval Policy
