@@ -697,8 +697,7 @@
             <div class="am-mini-box">
               <div class="am-mini-label">W-L</div>
               <div class="am-mini-value">
-                <span style="color:#4caf50">${stats.wins}</span>-
-                <span style="color:#f44336">${stats.losses}</span>
+                <span style="color:#4caf50">${stats.wins}</span> - <span style="color:#f44336">${stats.losses}</span>
               </div>
             </div>
 
@@ -1728,18 +1727,10 @@
 
           <div class="dl-stat-box">
             <div class="dl-stat-label">
-              Tracked W-L
+              W-L
             </div>
 
-            <div class="dl-stat-value">
-              <span style="color:#4caf50">
-                ${stats.wins}
-              </span>
-              -
-              <span style="color:#f44336">
-                ${stats.losses}
-              </span>
-            </div>
+            <div class="dl-stat-value"><span style="color:#4caf50">${stats.wins}</span> - <span style="color:#f44336">${stats.losses}</span></div>
           </div>
 
           <div class="dl-stat-box">
