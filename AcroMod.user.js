@@ -1225,7 +1225,7 @@
   let duelWidgetVisible =
     loadJSON(
       DUEL_VISIBLE_KEY,
-      true
+      false
     );
 
   const tracked = new Map();
