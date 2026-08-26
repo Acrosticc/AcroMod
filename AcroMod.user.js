@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AcroMod
 // @namespace    https://rlsimulator.com/
-// @version      1.2
+// @version      1.0
 // @description  AcroMod - RLSimulator Menu
 // @author       Acrostic
 // @match        https://rlsimulator.com/*
@@ -15,12 +15,11 @@
 (function () {
   "use strict";
 
-  const ACROMOD_VERSION = "1.2";
+  const ACROMOD_VERSION = "1.0";
   const UPDATE_URL = "https://raw.githubusercontent.com/Acrosticc/AcroMod/main/AcroMod.user.js";
 
   // Update checker
   const UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
-  const UPDATE_DISMISSED_KEY = "acromod_update_dismissed_version_v1";
 
   // =========================================================================
   // Shared helpers
@@ -613,18 +612,6 @@
       #am-update-toast .am-update-title {
         font-weight: 700;
         font-size: 13px;
-      }
-
-      #am-update-toast .am-update-close {
-        color: #9aa0a6;
-        cursor: pointer;
-        font-size: 12px;
-        line-height: 1;
-        padding: 2px;
-      }
-
-      #am-update-toast .am-update-close:hover {
-        color: #fff;
       }
 
       #am-update-toast .am-update-desc {
@@ -1846,13 +1833,7 @@
       <div class="am-update-title-row">
 
         <span class="am-update-title">
-          Update available
-        </span>
-
-        <span
-          class="am-update-close"
-          id="am-update-close">
-          &times;
+          Update required
         </span>
 
       </div>
@@ -1862,7 +1843,7 @@
           remoteVersion
         )} is out - you're on v${escapeHtml(
       ACROMOD_VERSION
-    )}.
+    )}. Please update to keep using AcroMod.
       </div>
 
       <button
@@ -1871,17 +1852,6 @@
         Update now
       </button>
     `;
-
-    document.getElementById(
-      "am-update-close"
-    ).onclick = () => {
-      saveJSON(
-        UPDATE_DISMISSED_KEY,
-        remoteVersion
-      );
-
-      toast.remove();
-    };
 
     document.getElementById(
       "am-update-btn"
@@ -1943,20 +1913,9 @@
           ACROMOD_VERSION
         )
       ) {
-        const dismissedVersion =
-          loadJSON(
-            UPDATE_DISMISSED_KEY,
-            null
-          );
-
-        if (
-          dismissedVersion !==
+        renderUpdateToast(
           remoteVersion
-        ) {
-          renderUpdateToast(
-            remoteVersion
-          );
-        }
+        );
       }
 
     } catch (err) {
