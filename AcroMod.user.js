@@ -1202,7 +1202,7 @@
   const DUELS_ENDPOINT =
     "https://rlsimulator.com/api/duels";
 
-  const POLL_INTERVAL_MS = 5000;
+  const POLL_INTERVAL_MS = 2000;
 
   const LOG_KEY =
     "rls_duel_log_v2";
